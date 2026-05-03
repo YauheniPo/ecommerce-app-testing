@@ -1,0 +1,49 @@
+---
+description: Linea Supply repo — how the Cursor agent should work (docs, just, vault)
+alwaysApply: true
+---
+
+# Linea Supply — Cursor agent
+
+You are working in a **FastAPI + React (Vite)** monorepo (SQLite). Follow the repo contract and shell commands below.
+
+## Workflow with the user (mandatory)
+
+1. **Plan first** — At the start of each user request (or when direction changes), state a short **numbered plan**: what you will read or inspect, what you will change, how you will verify (tests, `just check` / `just lint`, manual check). On follow-up turns in the same task, give a one-line plan update if the approach shifted; if unchanged, proceed and say so briefly.
+2. **Clarify the ideal outcome** — Before substantial implementation (multi-file work, new behavior, UX, API shape, or non-obvious trade-offs), ask **concrete questions** until “done” is clear: scope boundaries, acceptance criteria, preferred UX/copy, compatibility, deadlines, or “what would perfect look like?” Do not guess silently when those matter. If the request is already fully specified, state your **interpretation in one short paragraph** and execute. For trivial one-step fixes (typo, obvious single-line bug with one fix), a minimal plan plus stated assumptions is enough without a long Q&A.
+
+## Read first (do not skip)
+
+1. **`AGENTS.md`** (repo root) — short table of links + knowledge base rules.
+2. **`vault/agent/index.md`** — specs, engineering workflow, vault map (Russian index; paths are stable).
+3. For code you touch: **`backend/AGENTS.md`** or **`frontend/AGENTS.md`**.
+
+## Commands (run from repository root)
+
+Use **`just`** — see **`justfile`** or `just --list`.
+
+| Goal | Command |
+|------|---------|
+| Format backend + frontend | `just format` |
+| Lint / typecheck backend | `just check` |
+| Lint frontend | `just lint` |
+| Production build (frontend) | `just build` |
+| Full local CI (mirror pipeline) | `just ci` |
+| Full verification, all steps even if one fails (report) | `just ci-all-steps` — see `scripts/ci-all-steps.sh` |
+| Background dev servers + logs | `just dev-headless` → `just logs` → **`just stop`** when done |
+| Seed DB | `just seed` |
+
+Prefer these over ad-hoc one-liners unless you need a single targeted command.
+
+## Ports and URLs
+
+- Frontend: `http://localhost:3001`
+- Backend OpenAPI: `http://localhost:8001/docs`
+
+## Knowledge base (Obsidian)
+
+If **Obsidian MCP** is configured, follow **`vault/README.md`** and **`vault/SETUP.md`** for read/write boundaries and `vault/daily-changes/`. If MCP is off, still use the same paths in the editor.
+
+## GitHub
+
+Prefer **`gh`** for issues and PRs from the terminal when automation needs GitHub.

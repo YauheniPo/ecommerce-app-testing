@@ -8,16 +8,6 @@ FastAPI backend for the e-commerce demo application.
 - Python 3.13+
 - [uv](https://github.com/astral-sh/uv) package manager
 
-### Running Tests
-
-```bash
-# Run all backend tests
-just test-local
-
-# Run specific test file/function
-just test-local-single tests/test_products.py::test_create_product
-```
-
 ## Architecture
 - FastAPI framework with async/await patterns
 - SQLModel for database models

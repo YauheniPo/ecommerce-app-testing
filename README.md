@@ -1,29 +1,26 @@
-# Amp Demo App
+# Linea Supply — e-commerce demo
 
-This repository is a carefully crafted demo that showcases the capabilities of Amp, centered around an example e-commerce platform featuring a FastAPI backend and a React frontend. Data is stored in SQLite, so it is self-contained and easy to run.
+Full-stack **FastAPI + React (TypeScript)** demo with SQLite and **`just`**-based automation. Use **Cursor** locally; project rules load from [`.cursor/rules/linea-supply-agent.mdc`](.cursor/rules/linea-supply-agent.mdc).
 
-For more information about Amp visit the [Amp manual](https://ampcode.com/manual).
+**Cursor (AI agent):** read [AGENTS.md](AGENTS.md), then [vault/agent/index.md](vault/agent/index.md) (specs + workflow). Vault overview: [vault/README.md](vault/README.md). Day-to-day commands: [DEVELOPMENT.md](DEVELOPMENT.md) and [justfile](justfile).
 
 <img width="1290" height="1016" alt="Screenshot 2025-10-03 at 12 32 11 PM" src="https://github.com/user-attachments/assets/214b7e59-8168-446b-adef-bd481b586d64" />
 
 ## How to use this repo
 
-Follow the [Quick Start](#quick-start) guide to get started. Once the front and back ends are running (with the `just dev` command), then you can open your browser on one side of the screen with Amp up on the other (in VS Code or the CLI).
-
-See the [DEMO.md](DEMO.md) for more information about how to effectively use this repo for an array of different demo purposes ranging from issue to PR to advanced feature adds.
+Follow the [Quick Start](#quick-start). With `just dev` running, open [http://localhost:3001](http://localhost:3001). For agent-oriented notes see [DEVELOPMENT.md](DEVELOPMENT.md).
 
 ## Project Structure
 
 ```
 .
+├── .cursor/            # Cursor rules (agent workflow) + MCP config
 ├── .devcontainer/      # VS Code Dev Container configuration
 ├── .github/            # GitHub workflows and CI configuration
 ├── backend/            # FastAPI backend
 │   ├── app/            # Application source code
-│   ├── tests/          # Backend tests
 │   ├── alembic/        # Database migrations
 │   ├── pyproject.toml  # Python dependencies (managed by uv)
-│   ├── pytest.ini      # Test configuration
 │   ├── main.py         # FastAPI entry point
 │   ├── AGENTS.md       # Agent documentation for backend
 │   └── store.db        # SQLite database file
@@ -36,21 +33,18 @@ See the [DEMO.md](DEMO.md) for more information about how to effectively use thi
 │   │   ├── mockDB/     # Mock data for development
 │   │   ├── pages/      # Page-level components
 │   │   └── theme/      # Chakra UI theme configuration
-│   ├── e2e/            # Playwright E2E tests
 │   ├── public/         # Static assets
 │   ├── package.json    # Node.js dependencies
 │   ├── vite.config.ts  # Vite configuration
 │   ├── eslint.config.js # ESLint configuration
 │   ├── AGENTS.md       # Agent documentation for frontend
-│   └── playwright.config.ts # Playwright test configuration
-├── specs/              # Project specifications
+├── vault/              # Obsidian KB + product/agent docs (start at vault/agent/index.md; vault/README.md, vault/SETUP.md)
 ├── logs/               # Service logs (dev-headless mode)
-├── test-results/       # Test output and reports
 ├── justfile            # Development automation commands
 ├── package.json        # Root package.json for shared dependencies
 ├── settings.json       # Workspace settings
 ├── AGENTS.md           # Agent documentation for overall project
-├── DEMO.md             # Demo usage guide
+├── DEVELOPMENT.md      # Cursor / just / dev container notes
 └── README.md           # README
 ```
 
@@ -58,15 +52,13 @@ See the [DEMO.md](DEMO.md) for more information about how to effectively use thi
 
 ### Option 1: Dev Container (recommended)
 
-The fastest way to get started! No local installation beyond Podman required. If you encounter any errors, get the logs and feed them into Amp to help resolve. If that doesn't work, please ask an SE.
+The fastest way to get started: Podman (or Docker) plus VS Code. If the container fails to build, check the Dev Containers log and [.devcontainer/README.md](.devcontainer/README.md).
 
 **What you need:**
 
 If you have any of these preinstalled, make sure to update them before proceeding!
 
 - VS Code [download](https://code.visualstudio.com/download)
-  
-- Amp VS Code extension and/or CLI [download](https://ampcode.com/install)
   
 - Podman Desktop ([download](https://podman-desktop.io/))
   - Once installed, open it up and follow through the prompts to install `podman`
@@ -82,12 +74,11 @@ If you have any of these preinstalled, make sure to update them before proceedin
   - Change the box "Dev > Containers: Docker Path" from `docker` to `podman`: <img width="462" height="100" alt="image" src="https://github.com/user-attachments/assets/48673050-6f63-4760-bb54-4af7cc83242c" />
 
 - Homebrew (optional if you want to install the GitHub CLI) `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`
-- GitHub CLI `gh` (optional) if you would like to reference issues, push PRs, etc. directly from Amp `brew install gh`
+- GitHub CLI `gh` (optional): `brew install gh`
 
 **Code Setup:**
 
 - Open VS Code
-- Ensure VS Code Amp extension and/or Amp CLI are authenticated. You might need to authenticate the first time you bring up the devcontainer.
 - Open the terminal:
   <img width="281" height="57" alt="image" src="https://github.com/user-attachments/assets/c8f9f2b3-36e0-42ed-915a-71321c3a42cc" />
 - Enter the command below:
@@ -111,7 +102,7 @@ gh auth login
   <img width="624" height="274" alt="image" src="https://github.com/user-attachments/assets/07d17a3d-0101-4eeb-93dc-08c53ead9926" />
 - Wait a few minutes, the first build takes a few minutes, then it will be cached and near instant in the future
 
-- To start the demo app instances, either open the terminal and run `just dev` or ask Amp to `start all services in the background`
+- Start the app from the integrated terminal: `just dev` (or `just dev-headless` for background + `just logs` / `just stop`)
 
 Access the application on your local browser (ports will automatically be forwarded):
 
@@ -126,27 +117,19 @@ As you work with this repo, you can revert any changes made by selecting all fil
 
 The most foolproof way to reset is to delete the entire `ecommerce-app` repo and run `git clone https://github.com/sourcegraph/ecommerce-app.git` again.
 
-**Demo Flow**
+**Next steps**
 
-Once your setup is working and you can see the UI on [http://localhost:3001](http://localhost:3001). Go to the [DEMO.md](DEMO.md) page to learn about the different demo modules to use.
+Once the UI loads at [http://localhost:3001](http://localhost:3001), see [DEVELOPMENT.md](DEVELOPMENT.md) for CI and Cursor. To reopen later: VS Code → open the repo folder → **Reopen in Container**.
 
-In the future, to use this repo, just open VS Code, open the `ecommerce-app` folder, and click "Reopen in Container," and you should be ready to go.
+**What's included in the dev container**
 
-**What's Included in the Dev Container**
-
-Python 3.13, Node.js 22, all dependencies, Playwright browsers, GitHub CLI, Amp CLI, and all VS Code extensions pre-configured.
-Amp is set to run in Autonomous mode (most non-destructive commands allowed by default) with Playwright MCP
-Internal cost display is **disabled**.
-
-See [.devcontainer/README.md](.devcontainer/README.md) for detailed documentation and troubleshooting.
+Python 3.13, Node.js 22, dependencies, GitHub CLI, and VS Code extensions listed in [.devcontainer/devcontainer.json](.devcontainer/devcontainer.json). See [.devcontainer/README.md](.devcontainer/README.md) for details and troubleshooting.
 
 ### Option 2: Local Installation
 
 For direct installation on your host machine:
 
-1. [Install Amp](https://ampcode.com/) (VS Code extension and/or CLI)
-
-2. Install the prerequisites and clone the project:
+1. Install the prerequisites and clone the project:
 
 ```bash
 # Install homebrew
@@ -168,9 +151,6 @@ brew install node
 # Install gh CLI and authenticate
 brew install gh
 gh auth login
-
-# Install direnv for toolboxes to work
-brew install direnv
 ```
 
 ```bash
@@ -180,7 +160,6 @@ just --version
 python --version
 uv --version
 node --version
-direnv --version
 ```
 
 ```bash
@@ -188,13 +167,13 @@ git clone https://github.com/sourcegraph/ecommerce-app.git
 cd ecommerce-app
 ```
 
-3. Install dependencies and setup testing:
+2. Install dependencies:
 
 ```bash
-just install-all      # Install all dependencies (backend, frontend, E2E browsers)
+just install-all      # Install all dependencies (backend, frontend)
 ```
 
-4. Run the application:
+3. Run the application:
 
 ```bash
 just dev             # Start both services with native hot-reload using concurrently
@@ -228,7 +207,7 @@ just seed             # Populate database with sample data (only needed if datab
 Install dependencies (if not already done):
 
 ```bash
-just install-all      # All dependencies (backend, frontend, E2E browsers)
+just install-all      # All dependencies (backend, frontend)
 ```
 
 Run services individually (if needed):
@@ -238,32 +217,7 @@ just dev-backend      # Start only backend
 just dev-frontend     # Start only frontend
 ```
 
-### Testing & Quality
-
-#### Setup E2E Testing (Required First Time)
-
-```bash
-just setup-e2e        # Install Playwright browsers
-```
-
-#### Running Tests
-
-```bash
-# Backend tests
-just test-local                        # Backend tests
-just test-local-single TEST            # Run single test
-
-# E2E tests (Playwright)
-just test-e2e         # E2E tests (headless)
-just test-e2e-headed  # E2E tests (headed - for debugging)
-
-# Combined test suites
-just test-all-local   # All tests (backend + E2E)
-```
-
-**Note:** Frontend has no unit tests - only E2E tests with Playwright that test the full application.
-
-#### Code Quality
+### Quality
 
 ```bash
 # backend
@@ -286,15 +240,13 @@ Before pushing to CI, ensure all checks pass locally to avoid CI failures:
 just install-all      # Install all dependencies
 
 # Run complete CI pipeline locally
-just ci               # Runs: lint, tests, build, e2e (mirrors CI exactly)
+just ci               # Runs: format check, lint, types, frontend build (mirrors CI)
 ```
 
-`just ci` runs the exact same checks as the GitHub Actions CI pipeline:
+`just ci` runs the same checks as the GitHub Actions CI pipeline:
 
-1. **Backend Quality**: Ruff linting + MyPy type checking
-2. **Backend Tests**: Full test suite with coverage
-3. **Frontend Quality**: ESLint + TypeScript build
-4. **E2E Tests**: End-to-end Playwright tests
+1. **Backend**: Ruff format check, Ruff lint, MyPy
+2. **Frontend**: Prettier check, ESLint, production build
 
 ### Build & Deployment
 

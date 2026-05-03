@@ -78,4 +78,8 @@ lerna-debug.log*
 .vscode/*
 !.vscode/extensions.json
 !.vscode/settings.json
+!.vscode/tasks.json
 .idea/
+
+# Obsidian (vault в репозитории; плагины и кэш — локально)
+vault/.obsidian/

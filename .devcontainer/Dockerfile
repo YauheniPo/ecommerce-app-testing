@@ -43,11 +43,6 @@ RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | d
  && rm -rf /var/lib/apt/lists/*
 
 # ─────────────────────────────────────────────────────────────────
-# Install Amp CLI
-# ─────────────────────────────────────────────────────────────────
-RUN curl -fsSL https://ampcode.com/install.sh | bash
-
-# ─────────────────────────────────────────────────────────────────
 # Install Sourcegraph CLI
 # ─────────────────────────────────────────────────────────────────
 RUN set -eux; \
@@ -86,13 +81,6 @@ RUN set -eux; \
     uv --version
 
 # ─────────────────────────────────────────────────────────────────
-# Install Bun (JavaScript runtime for Amp toolbox)
-# ─────────────────────────────────────────────────────────────────
-RUN curl -fsSL https://bun.sh/install | bash \
- && ln -sf /root/.bun/bin/bun /usr/local/bin/bun \
- && bun --version
-
-# ─────────────────────────────────────────────────────────────────
 # Configure Python virtual environment path
 # ─────────────────────────────────────────────────────────────────
 # Install to /opt/venvs/backend (outside workspace) to prevent conflicts
@@ -128,13 +116,6 @@ COPY package.json package-lock.json ./
 COPY frontend/package.json ./frontend/
 RUN --mount=type=cache,target=/root/.npm \
     npm ci --no-audit --no-fund
-
-# ─────────────────────────────────────────────────────────────────
-# Install Playwright browsers to volume path
-# ─────────────────────────────────────────────────────────────────
-ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
-RUN mkdir -p /ms-playwright && \
-    npx playwright install --with-deps chromium
 
 # Mark node_modules as volume so it persists with correct platform binaries
 VOLUME ["/workspaces/app/node_modules"]
