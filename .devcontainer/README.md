@@ -9,12 +9,11 @@ The dev container comes pre-configured with:
 - **Languages & Runtimes:** Python 3.13, Node.js 22 LTS
 - **Package Managers:** uv (Python), npm (Node.js)
 - **Build Tools:** just, git, build-essential, sqlite3
-- **CLI Tools:** GitHub CLI (gh), Amp CLI
+- **CLI Tools:** GitHub CLI (`gh`)
 - **Python Dependencies:** All backend dependencies from pyproject.toml
 - **Node Dependencies:** All frontend dependencies pre-installed
-- **Playwright:** Chromium browser pre-installed for E2E testing
 - **Shell:** zsh with oh-my-zsh and spaceship theme
-- **VS Code Extensions:** Python, ESLint, Prettier, Playwright, Amp, and more
+- **VS Code Extensions:** Python, ESLint, Prettier, Ruff, and more (see `devcontainer.json`)
 
 ## Quick Start
 
@@ -54,7 +53,6 @@ The dev container comes pre-configured with:
 All dependencies are installed during the container build process:
 - Python packages installed to `/opt/venvs/backend` (outside workspace)
 - Node packages installed to a Docker volume at `/workspaces/app/node_modules`
-- Playwright browsers installed to `/ms-playwright` volume
 
 ### Workspace Structure
 Your local code is bind-mounted into the container at `/workspaces/app`, so any changes you make are immediately reflected. Dependencies are preserved in volumes to ensure correct platform binaries.
@@ -65,9 +63,6 @@ The container automatically forwards ports to your host:
 - **8001:** Backend (FastAPI)
 
 Access the app at http://localhost:3001 from your host browser.
-
-### Shared Authentication
-Amp authentication is shared from your host machine (`~/.config/amp`) so you don't need to re-authenticate inside the container.
 
 ## Troubleshooting
 
@@ -106,15 +101,10 @@ Once the container is running:
 ```bash
 # Start services
 just dev              # Interactive mode
-just dev-headless     # Background mode (useful for testing)
+just dev-headless     # Background mode (useful for agents / automation)
 
 # Add sample data
 just seed
-
-# Run tests
-just test-all-local   # All tests
-just test             # Backend only
-just test-e2e         # E2E only
 
 # Code quality
 just check            # Backend lint + type check
@@ -137,12 +127,9 @@ just stop
 - `linea-supply-node-modules`: Preserves Node.js dependencies with correct platform binaries
 - `linea-supply-uv-cache`: Speeds up Python package installations
 - `linea-supply-npm-cache`: Speeds up npm operations
-- `/ms-playwright`: Playwright browsers
-
 ### Environment Variables
 - `VIRTUAL_ENV=/opt/venvs/backend`: Python virtual environment path
 - `PATH`: Includes virtual environment bin directory
-- `PLAYWRIGHT_BROWSERS_PATH=/ms-playwright`: Playwright browser location
 
 ## Customization
 

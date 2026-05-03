@@ -1,7 +1,19 @@
 {
   "name": "ecommerce-app-root",
   "private": true,
+  "scripts": {
+    "docker:build": "docker build -f .devcontainer/Dockerfile -t linea-supply-dev:local .",
+    "docker:up": "docker rm -f linea-supply-local-demo 2>/dev/null || true; docker run -d --name linea-supply-local-demo -p 3001:3001 -p 8001:8001 -v \"$(pwd)\":/workspaces/app -v linea-supply-local-demo-nm:/workspaces/app/node_modules -w /workspaces/app linea-supply-dev:local bash -lc \"set -euo pipefail; npm ci --no-audit --no-fund; exec just dev\"",
+    "docker:logs": "docker logs -f linea-supply-local-demo",
+    "docker:stop": "docker rm -f linea-supply-local-demo",
+    "docker:dev": "npm run docker:build && npm run docker:up"
+  },
   "workspaces": [
     "frontend"
-  ]
+  ],
+  "devDependencies": {
+    "@beshkenadze/mcp-obsidian": "1.2.0",
+    "dotenv": "^16.4.7",
+    "thread-stream": "^3.1.0"
+  }
 }

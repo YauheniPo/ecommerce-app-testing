@@ -1,0 +1,30 @@
+{
+  "backend_app_py_files": [
+    "backend/app/__init__.py",
+    "backend/app/crud.py",
+    "backend/app/db.py",
+    "backend/app/main.py",
+    "backend/app/models.py",
+    "backend/app/schemas.py",
+    "backend/app/seed.py"
+  ],
+  "backend_tests_py_files": [],
+  "frontend_src_top_level": [
+    "App.tsx",
+    "api/",
+    "components/",
+    "context/",
+    "env.d.ts",
+    "hooks/",
+    "main.tsx",
+    "mockDB/",
+    "pages/",
+    "theme/",
+    "vite-env.d.ts"
+  ],
+  "frontend_e2e_present": false,
+  "github_workflows": [
+    "ci.yml"
+  ],
+  "justfile_present": true
+}

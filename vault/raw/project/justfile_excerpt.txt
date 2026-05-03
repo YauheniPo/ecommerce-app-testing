@@ -1,3 +1,4 @@
+=== justfile (full file) ===
 # FastAPI + React E-commerce Demo Automation
 # Install 'just' via: brew install just (macOS) or cargo install just
 

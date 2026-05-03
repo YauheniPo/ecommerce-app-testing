@@ -1,3 +1,2 @@
 # Ensure Unix line endings for shell scripts (prevents \r breaking shebang)
-.agents/tools/* text eol=lf
 *.sh text eol=lf

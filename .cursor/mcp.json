@@ -1,0 +1,26 @@
+{
+  "mcpServers": {
+    "sql": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-sqlite",
+        "${workspaceFolder}/backend/store.db"
+      ]
+    },
+    "obsidian": {
+      "command": "node",
+      "args": [
+        "-r",
+        "${workspaceFolder}/.cursor/obsidian-mcp-register.cjs",
+        "${workspaceFolder}/node_modules/@beshkenadze/mcp-obsidian/dist/stdio.js"
+      ],
+      "env": {
+        "OBSIDIAN_BASE_URL": "https://127.0.0.1:27124",
+        "LOG_TO_STDERR": "true",
+        "LOG_LEVEL": "error",
+        "NO_COLOR": "1"
+      }
+    }
+  }
+}

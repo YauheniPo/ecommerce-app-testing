@@ -1,236 +1,42 @@
-# Linea Supply - Agent Guide
+---
+description: Repository agent contract (Cursor-first)
+alwaysApply: false
+---
 
-## Project Overview
+# Agent contract (repository root)
 
-**Brand:** Linea Supply - Premium minimal e-commerce with monochrome design  
-**Purpose:** Full-stack e-commerce demo showcasing modern development practices with TDD  
-**Architecture:** FastAPI (Python 3.13+) backend + React TypeScript frontend  
-**Stack:** SQLite + Alembic, Native hot-reload, E2E testing with Playwright  
-**Design System:** Monochrome palette (sand/ink/charcoal) with subtle slate blue accents  
-**URLs:** Frontend http://localhost:3001, Backend http://localhost:8001/docs
+Work as a software developer. **Cursor:** project rules load from **`.cursor/rules/`** (see `linea-supply-agent.mdc`). Do not duplicate long guidance here — follow the links.
 
-## Built-in Tools (MUST USE)
+## Where to read
 
-**IMPORTANT:** Amp has custom built-in tools in `.agents/tools/` that MUST be used instead of running commands directly via Bash. These tools provide better error handling, structured output, and are optimized for agentic workflows.
+| Topic | File or directory |
+|--------|---------------------|
+| **Cursor agent workflow** (commands, ports, vault) | [`.cursor/rules/linea-supply-agent.mdc`](.cursor/rules/linea-supply-agent.mdc) |
+| Human quick start, repo tree, local URLs | [`README.md`](README.md) |
+| All shell automation | [`justfile`](justfile) |
+| Documentation hub (specs + workflow) | [`vault/agent/index.md`](vault/agent/index.md) |
+| Obsidian vault overview + agent flow | [`vault/README.md`](vault/README.md) |
+| Obsidian plugin, `.env`, Cursor MCP | [`vault/SETUP.md`](vault/SETUP.md) |
+| Backend stack, style, API | [`backend/AGENTS.md`](backend/AGENTS.md) |
+| Frontend stack, TypeScript | [`frontend/AGENTS.md`](frontend/AGENTS.md) |
+| CI job definitions | [`.github/workflows/`](.github/workflows/) |
+| Локальная полная проверка «все шаги, сводка» | [`scripts/ci-all-steps.sh`](scripts/ci-all-steps.sh) → **`just ci-all-steps`** |
 
-**Available Tools:**
+## Lint, format, build, CI (Cursor)
 
-- `run_tests` - Run backend/e2e/all tests with optional path and pattern filtering
-- `lint_and_check` - Run static analysis and linting on backend/frontend/both
-- `build_app` - Build frontend for production and verify TypeScript compilation
-- `format_code` - Format backend (ruff) and frontend (prettier) code
-- `run_ci` - Run complete CI pipeline with configurable stop-on-error behavior
+From the **repository root**, use **`just`** (requires [just](https://github.com/casey/just) installed):
 
-**ALWAYS use these tools for testing, linting, building, formatting, and CI operations.**
+- **Format:** `just format`.
+- **Backend lint + mypy:** `just check`.
+- **Frontend lint:** `just lint`.
+- **Production build:** `just build`.
+- **Full local CI:** `just ci`.
+- **Полный прогон с отчётом по каждому шагу** (не останавливается на первой ошибке): `just ci-all-steps` — `scripts/ci-all-steps.sh`.
 
-## Development Commands
+List everything: `just --list`.
 
-**Service Management:**
+## Knowledge base
 
-- `just dev-headless` - Start both services in background (detached for agentic development, always use this to start the services for testing)
-- `just stop` - Stop both services (always do this when you are done)
-- `just logs` - View last 100 lines from both service logs (use for troubleshooting)
-- `just seed` - Add sample data to the sqlite database
-- `just setup-e2e` - Install Playwright browsers
+If **Obsidian MCP** is enabled, treat [`vault/README.md`](vault/README.md) as the workflow source for what to read and update in `vault/` (context, structure, daily-changes). If MCP is off, use the same files from the editor.
 
-**Error Handling:**
-
-- If build fails, ensure ports 3001/8001 are available
-- For E2E test failures, check `frontend/test-results/` directory for detailed logs
-
-## Testing Guidelines
-
-### Behavior-Driven Testing Principles
-
-- No "unit tests" - test expected behavior, treating implementation as black box
-- Test through public API exclusively - internals invisible to tests
-- No 1:1 mapping between test files and implementation files
-- 100% coverage expected at all times, based on business behavior
-- Tests must document expected business behavior
-
-### Test Data Pattern
-
-Use factory functions with optional overrides for all test data:
-
-```python
-# Backend example
-def get_mock_product(overrides: dict = None) -> Product:
-    base = {
-        "id": "prod_123",
-        "name": "Test Product",
-        "price": 29.99,
-        "category": "electronics",
-        "in_stock": True
-    }
-    return Product(**(base | (overrides or {})))
-```
-
-```typescript
-// Frontend example
-const getMockUser = (overrides?: Partial<User>): User => ({
-  id: "user_123",
-  email: "test@example.com",
-  firstName: "John",
-  lastName: "Doe",
-  createdAt: new Date().toISOString(),
-  ...overrides,
-});
-```
-
-## Code Style & Quality
-
-### Formatting
-
-**Backend:** Ruff for formatting (Black-compatible)  
-**Frontend:** Prettier for formatting, ESLint for code quality
-
-**Always use the `format_code` tool after making code changes** to ensure consistent formatting across backend and frontend. ESLint is configured with `eslint-config-prettier` to disable conflicting style rules.
-
-### TypeScript Guidelines (Frontend)
-
-**Strict Mode Requirements:**
-
-```json
-{
-  "compilerOptions": {
-    "strict": true,
-    "noImplicitAny": true,
-    "strictNullChecks": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true
-  }
-}
-```
-
-**Rules:**
-
-- No `any` - ever. Use `unknown` if type is truly unknown
-- No type assertions (`as SomeType`) unless absolutely necessary with clear justification
-- No `@ts-ignore` or `@ts-expect-error` without explicit explanation
-- These rules apply to test code as well as production code
-
-### Python Guidelines (Backend)
-
-- Type hints required for all functions and methods
-- Use SQLModel for database models
-- Pydantic for request/response validation
-- HTTPException for error handling
-- Async/await patterns with FastAPI Depends()
-- Factory pattern for test data creation
-- NEVER use `# type: ignore` comments - always fix the underlying type issue instead
-
-### General Code Quality
-
-**No Comments in Code:** Code should be self-documenting through clear naming and structure. Comments indicate code isn't clear enough.
-
-**Prefer Options Objects:** Use options objects for function parameters as default pattern:
-
-```python
-# Python
-@dataclass
-class CreateOrderOptions:
-    user_id: str
-    items: list[OrderItem]
-    shipping_address: str
-    payment_method: str
-    discount_code: Optional[str] = None
-
-def create_order(options: CreateOrderOptions) -> Order:
-    # implementation
-```
-
-**Understanding DRY:** Don't Repeat Yourself is about knowledge, not code. Avoid duplicating business logic, not similar-looking code.
-
-### Error Handling
-
-Use Result types or early returns:
-
-```python
-from typing import Union
-from dataclasses import dataclass
-
-@dataclass
-class Success:
-    data: Any
-
-@dataclass
-class Error:
-    message: str
-    code: str
-
-Result = Union[Success, Error]
-
-def process_payment(payment_data: dict) -> Result:
-    if not is_valid_payment(payment_data):
-        return Error("Invalid payment data", "INVALID_PAYMENT")
-
-    return Success(execute_payment(payment_data))
-```
-
-## Architecture & Patterns
-
-### Backend Architecture
-
-- **Design Patterns:** Feature-based folder structure, dependency injection via FastAPI Depends()
-- **Data Flow:** SQLModel → Pydantic schemas → API responses
-- **Database:** SQLite with Alembic migrations in `backend/alembic/versions/`
-- **API Conventions:** RESTful endpoints, snake_case in responses
-
-### Frontend Architecture
-
-- **Components:** Functional components only, TypeScript interfaces
-- **State Management:** Context API for global state, local state with useState/useReducer
-- **Forms:** Formik + Yup for validation
-- **UI:** Chakra UI components
-- **Data Flow:** API calls → context state → component props
-
-### Testing Architecture
-
-- **Backend:** pytest with async support, factory-boy for test data
-- **E2E:** Playwright for full user journey testing
-- **Coverage:** 100% coverage requirement for all business logic
-
-## Refactoring Guidelines
-
-**Refactoring Rules:**
-
-1. Commit before refactoring
-2. Look for useful abstractions based on semantic meaning
-3. Maintain external APIs during refactoring
-4. Verify and commit after refactoring
-5. Never break existing consumers of your code
-
-## Development Workflow
-
-### Pre-commit Checklist
-
-1. Format all code changes (use `format_code` tool)
-2. All tests pass (use `run_tests` tool)
-3. Code follows TDD process (tests written first)
-4. Linting passes (use `lint_and_check` tool)
-5. No type errors in TypeScript (use `build_app` tool)
-6. Factory functions used for all test data
-7. Business behavior documented through tests
-
-Run `run_ci` tool to verify all checks pass before pushing.
-
-### GitHub Workflow
-
-**Issue & Pull Request Management:**
-
-- Always use GitHub CLI for repository interactions
-- Use GitHub CLI for fetching issues, creating PRs, commenting
-- Never use curl commands or MCP for GitHub API operations
-- Rely exclusively on GitHub CLI tools for repository operations
-
-## Security Considerations
-
-- **Environment Variables:** All secrets in `.env` files, never committed
-- **Input Validation:** All inputs validated with Pydantic (backend) before database access
-- **Database:** Use SQLModel with proper relationships, no raw SQL queries
-- **Authentication:** JWT tokens, proper session management
-- **Dependencies:** Regular security audits, address vulnerabilities within 3 days
-
-### Sourcegraph CLI
-
-If a user asks Amp to use Sourcegraph or Sourcegraph Code Search and does not specify MCP then always utilize the Sourcegraph CLI `src`. Always run `src --help` first and review the query syntax at [https://sourcegraph.com/docs/code-search/queries](https://sourcegraph.com/docs/code-search/queries). No web search.
+Vault workflow: [vault/README.md](vault/README.md).

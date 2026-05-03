@@ -1,0 +1,95 @@
+=== backend_app ===
+backend/app/
+├── __init__.py
+├── crud.py
+├── db.py
+├── main.py
+├── models.py
+├── schemas.py
+└── seed.py
+
+=== backend_tests ===
+(missing) backend/tests/
+
+=== frontend_src ===
+frontend/src/
+├── api/
+│   ├── client.ts
+│   └── types.ts
+├── components/
+│   ├── CartItem/
+│   │   ├── CartItem.tsx
+│   │   └── CartItemMobile.tsx
+│   ├── Delivery/
+│   │   ├── DeliveryOptionsSelector.tsx
+│   │   ├── DeliveryOptionsSummary.tsx
+│   │   ├── DeliverySpeedIcon.tsx
+│   │   └── index.ts
+│   ├── Footer/
+│   │   ├── Footer.tsx
+│   │   └── FooterMobile.tsx
+│   ├── Icons/
+│   │   └── BookmarkIcon.tsx
+│   ├── Loading/
+│   │   ├── LoadingProduct.tsx
+│   │   └── ProgressLine.tsx
+│   ├── MUI/
+│   │   ├── MUIBadge.tsx
+│   │   ├── MUIRating.tsx
+│   │   └── MUISkeleton.tsx
+│   ├── Sidebar/
+│   │   ├── Sidebar.tsx
+│   │   └── SidebarMobile.tsx
+│   ├── AuthPage.tsx
+│   ├── ContactDetails.tsx
+│   ├── Container.tsx
+│   ├── FeaturedBanner.tsx
+│   ├── Header.tsx
+│   ├── Logo.tsx
+│   ├── Main.tsx
+│   ├── MotionBox.tsx
+│   ├── ProductCard.tsx
+│   ├── ProductsGrid.tsx
+│   ├── SearchBar.tsx
+│   └── Tab.tsx
+├── context/
+│   ├── GlobalState.tsx
+│   ├── products.json
+│   └── useGlobalContext.ts
+├── hooks/
+│   ├── useCountdown.ts
+│   └── useFilteredProducts.ts
+├── mockDB/
+│   └── db.ts
+├── pages/
+│   ├── Cart.tsx
+│   ├── Home.tsx
+│   ├── Login.tsx
+│   ├── Product.tsx
+│   ├── Register.tsx
+│   ├── Saved.tsx
+│   └── SearchResults.tsx
+├── theme/
+│   ├── components/
+│   │   ├── button.ts
+│   │   ├── feedback.ts
+│   │   ├── form.ts
+│   │   ├── input.ts
+│   │   ├── layout.ts
+│   │   ├── overlay.ts
+│   │   ├── tabs.ts
+│   │   └── typography.ts
+│   ├── foundations/
+│   │   ├── breakpoints.ts
+│   │   ├── colors.ts
+│   │   ├── semantic-tokens.ts
+│   │   ├── spacing.ts
+│   │   └── typography.ts
+│   ├── index.ts
+│   ├── mui-theme.ts
+│   ├── README.md
+│   └── tokens.ts
+├── App.tsx
+├── env.d.ts
+├── main.tsx
+└── vite-env.d.ts

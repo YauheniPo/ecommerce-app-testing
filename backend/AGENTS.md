@@ -1,17 +1,17 @@
 # Backend Agent Guide
 
 ## Overview
-**Purpose:** FastAPI backend for e-commerce demo with strict TDD practices  
-**Stack:** Python 3.13+, FastAPI, SQLModel, SQLite, Alembic, pytest  
+**Purpose:** FastAPI backend for the e-commerce demo  
+**Stack:** Python 3.13+, FastAPI, SQLModel, SQLite, Alembic  
 **Architecture:** Feature-based structure with dependency injection via FastAPI Depends()
 
-## Built-in Tools
+## Cursor / terminal workflow
 
-For testing, linting, formatting, and CI operations, use the built-in tools documented in the root [AGENTS.md](../AGENTS.md#built-in-tools-must-use):
-- `run_tests` - Run backend tests with optional path and pattern filtering
-- `lint_and_check` - Run linting (ruff) and type checking (mypy)
-- `format_code` - Format code with ruff
-- `run_ci` - Run complete CI pipeline
+From the **repository root**, use **`just`** (see root [AGENTS.md](../AGENTS.md) and [justfile](../justfile)). Typical backend tasks:
+
+- **Lint + mypy:** `just check`.
+- **Format:** `just format` (formats backend and frontend).
+- **Full CI:** `just ci`.
 
 ## Essential Commands
 
@@ -26,63 +26,8 @@ For testing, linting, formatting, and CI operations, use the built-in tools docu
 - `uv run alembic downgrade -1` - Rollback one migration
 - `uv run python -m app.seed` - Seed database with sample data
 
-**Testing:**
-- Use `run_tests` tool with action "backend" to run tests (preferred)
-- `uv run pytest` - Run all tests directly
-- `uv run pytest tests/test_products.py::test_create_product` - Run specific test
-- `uv run pytest --cov=app` - Run tests with coverage
-- `uv run pytest -v` - Verbose test output
-
 **Quality Checks:**
-- Use `lint_and_check` tool with target "backend" for linting (ruff) and type checking (mypy)
-- Use `format_code` tool with target "backend" to format code with ruff
-- Use `run_ci` tool to run complete CI pipeline
-
-## Testing Process
-
-
-### Backend Testing Patterns
-
-**API Testing Example:**
-```python
-def test_create_product_returns_created_product():
-    """Test that POST /products creates and returns product"""
-    product_data = get_mock_product_data({
-        "name": "Gaming Laptop",
-        "price": 999.99,
-        "category": "electronics"
-    })
-    
-    response = client.post("/products", json=product_data)
-    
-    assert response.status_code == 201
-    created_product = response.json()
-    assert created_product["name"] == "Gaming Laptop"
-    assert created_product["id"] is not None
-```
-
-**Database Testing with Fixtures:**
-```python
-@pytest.fixture
-def db_session():
-    """Provide clean database session for each test"""
-    session = TestingSessionLocal()
-    try:
-        yield session
-    finally:
-        session.close()
-
-def test_product_repository_creates_product(db_session):
-    """Test ProductRepository.create() persists to database"""
-    repo = ProductRepository(db_session)
-    product_data = get_mock_product_data()
-    
-    created_product = repo.create(product_data)
-    
-    assert created_product.id is not None
-    db_product = db_session.get(Product, created_product.id)
-    assert db_product is not None
-```
+- From repo root: `just check` (ruff + mypy), `just format`, `just ci`
 
 ## Code Style & Architecture
 
@@ -146,26 +91,6 @@ def get_product_or_404(product_id: int, session: Session) -> Product:
     return product
 ```
 
-### Test Data Factories
-
-Always use factory functions with overrides:
-
-```python
-def get_mock_product_data(overrides: dict = None) -> dict:
-    base = {
-        "name": "Test Product",
-        "price": 29.99,
-        "category": "electronics",
-        "description": "A test product",
-        "in_stock": True
-    }
-    return base | (overrides or {})
-
-def get_mock_product(overrides: dict = None) -> Product:
-    data = get_mock_product_data(overrides)
-    return Product(**data)
-```
-
 ## Directory Structure
 
 ```
@@ -178,10 +103,6 @@ backend/
 │   ├── repositories/     # Database access layer
 │   ├── dependencies.py   # FastAPI dependencies
 │   └── database.py       # Database connection setup
-├── tests/
-│   ├── test_products.py  # Product API tests
-│   ├── test_orders.py    # Order API tests
-│   └── conftest.py       # Pytest fixtures
 ├── alembic/
 │   └── versions/         # Database migrations
 └── main.py               # FastAPI application entry point
@@ -238,34 +159,6 @@ class Order(SQLModel, table=True):
         "pages": 5
     }
 }
-```
-
-## Testing Strategy
-
-### Test Categories
-- **API Tests:** Test FastAPI endpoints through TestClient
-- **Service Tests:** Test business logic in isolation
-- **Repository Tests:** Test database operations
-- **Integration Tests:** Test full request/response cycle
-
-### Coverage Requirements
-- 100% coverage for all business logic
-- Every API endpoint must have tests
-- Database operations must be tested
-- Error cases must be covered
-
-### Mock External Dependencies
-```python
-from unittest.mock import Mock
-import pytest
-
-@pytest.fixture
-def mock_email_service():
-    return Mock()
-
-def test_order_creation_sends_confirmation_email(mock_email_service):
-    # Test that order creation triggers email
-    pass
 ```
 
 ## Security Practices

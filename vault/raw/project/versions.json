@@ -1,0 +1,79 @@
+{
+  "backend_pyproject": {
+    "path": "backend/pyproject.toml",
+    "sha256": "1579da9cb288723b01104cd9eb5e88ae06332fea5b1d8240e221377b9be11c7b",
+    "dependencies": [
+      "alembic>=1.16.5",
+      "fastapi>=0.116.2",
+      "httpx>=0.28.1",
+      "mypy>=1.18.1",
+      "pillow>=11.3.0",
+      "python-dotenv>=1.1.1",
+      "python-multipart>=0.0.20",
+      "requests>=2.32.5",
+      "ruff>=0.13.0",
+      "sqlmodel>=0.0.24",
+      "uvicorn[standard]>=0.35.0"
+    ]
+  },
+  "backend_requires_python": ">=3.13",
+  "frontend_package": {
+    "path": "frontend/package.json",
+    "sha256": "7016f25903d94c17c54e30ab8f12b2b347fbaad8612cf9c0d1408b7935a56caf",
+    "name": "ecommerce-demo",
+    "version": "0.0.0",
+    "scripts": [
+      "build",
+      "dev",
+      "format",
+      "format:check",
+      "lint",
+      "preview"
+    ],
+    "dependencies": [
+      "@chakra-ui/icons",
+      "@chakra-ui/react",
+      "@emotion/react",
+      "@emotion/styled",
+      "@heroicons/react",
+      "@loadable/component",
+      "@mui/material",
+      "focus-visible",
+      "formik",
+      "framer-motion",
+      "lazysizes",
+      "react",
+      "react-dom",
+      "react-icons",
+      "react-router-dom",
+      "yup"
+    ],
+    "devDependencies": [
+      "@types/loadable__component",
+      "@types/node",
+      "@types/react",
+      "@types/react-dom",
+      "@typescript-eslint/eslint-plugin",
+      "@typescript-eslint/parser",
+      "@vitejs/plugin-react",
+      "concurrently",
+      "csstype",
+      "eslint",
+      "eslint-config-prettier",
+      "prettier",
+      "typescript",
+      "vite"
+    ]
+  },
+  "root_package": {
+    "path": "package.json",
+    "sha256": "68a743813d3263e215d3d4950bee8358ff8da29e571f8fdd482dcdfde604f841",
+    "scripts": [
+      "docker:build",
+      "docker:dev",
+      "docker:logs",
+      "docker:stop",
+      "docker:up"
+    ]
+  }
+}

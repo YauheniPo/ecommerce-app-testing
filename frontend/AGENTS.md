@@ -3,20 +3,19 @@
 ## Overview
 
 **Brand:** Linea Supply - Premium minimal e-commerce with monochrome design  
-**Purpose:** React TypeScript frontend for e-commerce demo with strict TDD practices  
-**Stack:** React 18, TypeScript, Vite, Chakra UI, Playwright  
+**Purpose:** React TypeScript frontend for the e-commerce demo  
+**Stack:** React 18, TypeScript, Vite, Chakra UI  
 **Design System:** Modular theme with semantic tokens (sand/ink/charcoal colors, Inter font)  
 **Architecture:** Component-based with Context API for state management
 
-## Built-in Tools
+## Cursor / terminal workflow
 
-For testing, linting, building, formatting, and CI operations, use the built-in tools documented in the root [AGENTS.md](../AGENTS.md#built-in-tools-must-use):
+From the **repository root**, use **`just`** (see root [AGENTS.md](../AGENTS.md) and [justfile](../justfile)):
 
-- `run_tests` - Run E2E tests with optional path and pattern filtering
-- `lint_and_check` - Run ESLint checking
-- `build_app` - Build for production and verify TypeScript compilation
-- `format_code` - Format code with prettier
-- `run_ci` - Run complete CI pipeline
+- **Lint:** `just lint`.
+- **Build / types:** `just build`.
+- **Format:** `just format`.
+- **Full CI:** `just ci`.
 
 ## Essential Commands
 
@@ -26,23 +25,9 @@ For testing, linting, building, formatting, and CI operations, use the built-in 
 - `npm install` - Install dependencies
 - `npm run preview` - Preview production build
 
-**Testing:**
-
-- Use `run_tests` tool with action "e2e" to run E2E tests (preferred)
-- `npx playwright test` - Run E2E tests directly
-- `npx playwright test --ui` - Run E2E tests with UI mode
-
 **Quality Checks:**
 
-- Use `lint_and_check` tool with target "frontend" for ESLint checking
-- Use `build_app` tool for production build (includes TypeScript type checking)
-- Use `format_code` tool with target "frontend" to format code with prettier
-- Use `run_ci` tool to run complete CI pipeline
-
-**Playwright:**
-
-- `npx playwright install` - Install browser dependencies
-- `npx playwright codegen localhost:3001` - Generate test code
+- From repo root: `just lint`, `just build`, `just format`, `just ci`
 
 ## TypeScript Standards
 
@@ -101,54 +86,6 @@ export interface ApiError {
   readonly error: string
   readonly code: string
 }
-```
-
-## E2E Testing with Playwright
-
-### Page Object Pattern
-
-```typescript
-// pages/ProductPage.ts
-import { Page, expect } from '@playwright/test'
-
-export class ProductPage {
-  constructor(private page: Page) {}
-
-  async goto() {
-    await this.page.goto('/products')
-  }
-
-  async addProductToCart(productName: string) {
-    const productCard = this.page.locator(`[data-testid="product-${productName}"]`)
-    await productCard.locator('button:has-text("Add to Cart")').click()
-  }
-
-  async expectProductVisible(productName: string) {
-    await expect(this.page.locator(`[data-testid="product-${productName}"]`)).toBeVisible()
-  }
-
-  async expectCartItemCount(count: number) {
-    await expect(this.page.locator('[data-testid="cart-count"]')).toHaveText(count.toString())
-  }
-}
-```
-
-### E2E Test Example
-
-```typescript
-// e2e/shopping.spec.ts
-import { test } from '@playwright/test'
-import { ProductPage } from '../pages/ProductPage'
-
-test('user can add products to cart', async ({ page }) => {
-  const productPage = new ProductPage(page)
-
-  await productPage.goto()
-  await productPage.expectProductVisible('Gaming Laptop')
-
-  await productPage.addProductToCart('Gaming Laptop')
-  await productPage.expectCartItemCount(1)
-})
 ```
 
 ## Directory Structure
